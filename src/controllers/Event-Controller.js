@@ -52,7 +52,7 @@ const addImmageToEvent=async (req,res)=>{
             return res.status(406).json({ Message: "Missing required event id" });
         }
         console.log(req.file)
-        const eventToAddImage=await Event.findOneAndUpdate({id},{Image:req.file.filename})
+        const eventToAddImage=await Event.findOneAndUpdate({_id:id},{Image:req.file.filename})
         if (!eventToAddImage) {
             return res.status(406).json({ Message: "the event dosen t exist" });
         }
