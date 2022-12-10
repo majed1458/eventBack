@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path")
 
-const { createEvent, addImmageToEvent, getAllEvents } = require("../controllers/Event-Controller")
+const { createEvent, addImmageToEvent, getAllEvents,deleteEvent } = require("../controllers/Event-Controller")
 const router = express.Router();
 const multer = require('multer');
 
@@ -10,14 +10,17 @@ const storage = multer.diskStorage({
         cb(null, './images')
     },
     filename: (req, file, cb) => {
-        return cb(null, `${file.originalname}--${Date.now()}${path.extname(file.originalname)}`)
+        let f1 =
+        cb(null, `${file.originalname}--${Date.now()}${path.extname(file.originalname)}`)
+       
     }
 })
 const upload = multer({
     storage: storage
 })
 
-router.post("/create", createEvent);
-router.get("/allEvents", getAllEvents)
-router.put("/addImg/:id", upload.single("event_img"), addImmageToEvent)
+router.post("/create",createEvent);
+router.get("/allEvents",getAllEvents)
+router.put("/addImmage/:id",upload.single("event_img"),addImmageToEvent)
+router.delete("/delete/:id",deleteEvent)
 module.exports = router;

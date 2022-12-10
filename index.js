@@ -8,10 +8,14 @@ const EventRoutes = require("./src/routes/Event-Routes")
 const app = express();
 const connectDB = require("./src/config/DB");
 require("dotenv").config();
+var corsOptions = {
+  origin: 'http://localhost:4200',
+  optionsSuccessStatus: 200 // For legacy browser support
+}
 
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cors(corsOptions));
+app.use(express.json());
 //connectin database
 connectDB();
 app.use('/uploads',express.static('images'))

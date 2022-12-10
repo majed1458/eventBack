@@ -8,29 +8,32 @@ const path = require("path")
 
 const createEvent = async (req, res) => {
     try {
-        const {title,description,date,address} = req.body;
+        const {Title,Description,DateEven,Address} = req.body;
 
         if (
-            !title ||
-            !description ||
-            !date ||
-            !address
+            !Title ||
+            !Description ||
+            !DateEven ||
+            !Address
             ) {
             return res
                 .status(406)
                 .json({ Message: "Please provide all required informations." });
         }
        
-  
+ 
         const newEvent = new Event({
-            Title:title,
-            Description:description,
-            Date:new Date(date),
-            Address:address
+            Title:Title,
+            Description:Description,
+            Date:new Date(DateEven),
+            Address:Address,
+            
         });
+   
         await newEvent.save();
        
-        return res.status(201).json({ Message: "event created successfully" });
+       
+        return res.status(201).json({newEvent});
     } catch (error) {
         console.log("##########:", error);
         res.status(500).send({ Message: "Server Error", Error: error.message });
@@ -76,7 +79,7 @@ const deleteEvent = async (req, res) => {
             return res.status(406).json({ Message: "Event doesn't exist" });
         }
         // **Delete the order
-        const deleteEvent = await Event.remove({  _id:id});
+        const deleteEvent = await Event.deleteOne({ _id:id});
         if (!deleteEvent) {
             return res.status(400).json({ Message: "Event doesn't exist" });
         }
