@@ -22,5 +22,6 @@ const upload = multer({
 router.post("/create",createEvent);
 router.get("/allEvents",getAllEvents)
 router.put("/addImmage/:id",upload.single("event_img"),addImmageToEvent)
+router.put("update/:id")
 router.delete("/delete/:id",deleteEvent)
 module.exports = router;

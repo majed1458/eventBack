@@ -40,11 +40,44 @@ const createEvent = async (req, res) => {
     }
 };
 
+const modifyEvent = async (req, res) => {
+    try {
+        const {Title,Description,DateEven,Address} = req.body;
+        const{id}=req.params
+
+        if (
+            !Title ||
+            !Description ||
+            !DateEven ||
+            !Address
+            ) {
+            return res
+                .status(406)
+                .json({ Message: "Please provide all required informations." });
+        }
+       
+ 
+        const newEvent = new Event({
+            Title:Title,
+            Description:Description,
+            Date:new Date(DateEven),
+            Address:Address,
+            
+        });
+   
+        await newEvent.save();
+       
+       
+        return res.status(201).json({newEvent});
+    } catch (error) {
+        console.log("##########:", error);
+        res.status(500).send({ Message: "Server Error", Error: error.message });
+    }
+};
 //---------------------------------------------------------------------------
-// @desc    set order informations
-// @route   PUT /api/order/update/replie/:_id
-// @access  private
-// @Role    supplier
+// @desc    set immage to event
+// @route   PUT /api/event/addImmage/:id
+
 const addImmageToEvent=async (req,res)=>{
     try{
         const { id } = req.params;
@@ -52,33 +85,34 @@ const addImmageToEvent=async (req,res)=>{
             return res.status(406).json({ Message: "Missing required event id" });
         }
         console.log(req.file)
+console.log(req.params)
         const eventToAddImage=await Event.findOneAndUpdate({_id:id},{Image:req.file.filename})
+        console.log(eventToAddImage)
         if (!eventToAddImage) {
             return res.status(406).json({ Message: "the event dosen t exist" });
         }
-        return res.status(201).json({ Message: "event created successfully" });
+        return res.status(201).json(eventToAddImage);
     }catch(err){
         console.log("##########:", error);
         res.status(500).send({ Message: "Server Error", Error: error.message });
     }
 }
 //---------------------------------------------------------------------------
-// @desc    delete an order
-// @route   DELETE /api/order/delete/:_id
-// @access  private
-// @Role    archived
+// @desc    delete an event
+// @route   DELETE /api/event/delete/:id
+
 const deleteEvent = async (req, res) => {
     try {
         const { id } = req.params;
         if (!id) {
             return res.status(406).json({ Message: "Missing required event Id" });
         }
-        // **Check if the order exists
+        // **Check if the event exists
         const getEvent = await Event.findOne({ _id:id });
         if (!getEvent) {
             return res.status(406).json({ Message: "Event doesn't exist" });
         }
-        // **Delete the order
+        // **Delete the event
         const deleteEvent = await Event.deleteOne({ _id:id});
         if (!deleteEvent) {
             return res.status(400).json({ Message: "Event doesn't exist" });
@@ -89,36 +123,13 @@ const deleteEvent = async (req, res) => {
         res.status(500).send({ Message: "Server Error", Error: error.message });
     }
 };
-//---------------------------------------------------------------------------
-// @desc    get one order
-// @route   DELETE /api/order/one/:_buyerId
-// @access  private
-// @Role    all roles
-const getOneEvent = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!id) {
-            return res.status(406).json({ Message: "Missing required event id" });
-        }
-        const getEvent = await Order.findOne({ _id:id });
-        if (!getEvent) {
-            return res.status(400).json({ Message: "event doesn't exist" });
-        }
-        return res
-            .status(200)
-            .json({ Message: "event retrived successfully", event: getEvent });
-    } catch (error) {
-        console.log("##########:", error);
-        res.status(500).send({ Message: "Server Error", Error: error.message });
-    }
-};
+
 
 
 //-------------------------------------------------------------------------
-// @desc    get all orders
-// @route   GET /api/order/buyer/:_buyerId
-// @access  private
-// @Role    admin
+// @desc    get all events
+// @route   GET /api/event/allEvents
+
 const getAllEvents = async (req, res) => {
     try {
         const page = req.query.p || 0;
@@ -144,5 +155,5 @@ module.exports = {
     addImmageToEvent,
     getAllEvents,
     deleteEvent,
-    getOneEvent
+   
 };
