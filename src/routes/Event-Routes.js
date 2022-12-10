@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path")
 
-const { createEvent, addImmageToEvent, getAllEvents,deleteEvent } = require("../controllers/Event-Controller")
+const { createEvent, addImmageToEvent, getAllEvents,deleteEvent, modifyEvent } = require("../controllers/Event-Controller")
 const router = express.Router();
 const multer = require('multer');
 
@@ -22,6 +22,6 @@ const upload = multer({
 router.post("/create",createEvent);
 router.get("/allEvents",getAllEvents)
 router.put("/addImmage/:id",upload.single("event_img"),addImmageToEvent)
-router.put("update/:id")
+router.put("update/:id",modifyEvent)
 router.delete("/delete/:id",deleteEvent)
 module.exports = router;
